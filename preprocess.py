@@ -15,18 +15,18 @@ from scipy.io import loadmat
 
 random.seed(1234)
 
-workdir = '/home/max/Documents/RecSys/Codes/GraphRec/dataset/'
+workdir = 'dataset/'
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--dataset', default='Ciao', help='dataset name: Ciao/Epinions')
 parser.add_argument('--test_prop', default=0.1, help='the proportion of data used for test')
-opt = parser.parse_args()
+args = parser.parse_args()
 
 # load data
-if opt.dataset == 'Ciao':
+if args.dataset == 'Ciao':
 	click_f = loadmat(workdir + 'Ciao/rating.mat')['rating']
 	trust_f = loadmat(workdir + 'Ciao/trustnetwork.mat')['trustnetwork']
-elif opt.dataset == 'Epinions':
+elif args.dataset == 'Epinions':
 	click_f = np.loadtxt(workdir+'Epinions/ratings_data.txt', dtype = np.int32)
 	trust_f = np.loadtxt(workdir+'Epinions/trust_data.txt', dtype = np.int32)
 else:
@@ -47,9 +47,9 @@ rate_count = 0
 for s in click_f:
 	uid = s[0]
 	iid = s[1]
-	if opt.dataset == 'Ciao':
+	if args.dataset == 'Ciao':
 		label = s[3]
-	elif opt.dataset == 'Epinions':
+	elif args.dataset == 'Epinions':
 		label = s[2]
 
 	if uid > user_count:
@@ -69,13 +69,13 @@ pos_list = list(set(pos_list))
 
 # train, valid and test data split
 random.shuffle(pos_list)
-num_test = int(len(pos_list) * opt.test_prop)
+num_test = int(len(pos_list) * args.test_prop)
 test_set = pos_list[:num_test]
 valid_set = pos_list[num_test:2 * num_test]
 train_set = pos_list[2 * num_test:]
 print('Train samples: {}, Valid samples: {}, Test samples: {}'.format(len(train_set), len(valid_set), len(test_set)))
 
-with open(workdir + opt.dataset + '/dataset.pkl', 'wb') as f:
+with open(workdir + args.dataset + '/dataset.pkl', 'wb') as f:
 	pickle.dump(train_set, f, pickle.HIGHEST_PROTOCOL)
 	pickle.dump(valid_set, f, pickle.HIGHEST_PROTOCOL)
 	pickle.dump(test_set, f, pickle.HIGHEST_PROTOCOL)
@@ -142,7 +142,7 @@ for u in tqdm(range(user_count + 1)):
 			uu_items.append(u_items_list[uid])
 		u_users_items_list.append(uu_items)
 	
-with open(workdir + opt.dataset + '/list.pkl', 'wb') as f:
+with open(workdir + args.dataset + '/list.pkl', 'wb') as f:
 	pickle.dump(u_items_list, f, pickle.HIGHEST_PROTOCOL)
 	pickle.dump(u_users_list, f, pickle.HIGHEST_PROTOCOL)
 	pickle.dump(u_users_items_list, f, pickle.HIGHEST_PROTOCOL)
