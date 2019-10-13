@@ -15,7 +15,7 @@ from scipy.io import loadmat
 
 random.seed(1234)
 
-workdir = 'dataset/'
+workdir = 'datasets/'
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--dataset', default='Ciao', help='dataset name: Ciao/Epinions')
